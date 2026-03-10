@@ -90,23 +90,28 @@ const App = () => {
     return recognition;
   }, []);
 
-  // Auto-scroll to cards when they are returned
-  const scrollToCards = () => {
-    if (messages.length > 0) {
+  // Intelligently auto-scroll based on message type
+  const scrollToNewMessage = () => {
+    if (messages.length > 0 && !isTyping) {
       const lastMsg = messages[messages.length - 1];
-      if (lastMsg.showItinerary && !isTyping) {
-        setTimeout(() => {
-          const el = document.getElementById(`itinerary-${lastMsg.id}`);
-          if (el) {
+      setTimeout(() => {
+        const el = document.getElementById(`msg-${lastMsg.id}`);
+        if (el) {
+          if (lastMsg.showItinerary) {
+            // For large itinerary rendering, align the top of Sarah's message to the top of the view
+            // so her dialogue text isn't pushed out of frame above the cards
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            // For normal dialogue, just scroll it into view naturally at the bottom
+            el.scrollIntoView({ behavior: 'smooth', block: 'end' });
           }
-        }, 100);
-      }
+        }
+      }, 100);
     }
   };
 
   useEffect(() => {
-    scrollToCards();
+    scrollToNewMessage();
   }, [messages, isTyping]);
 
   const speakText = async (text) => {
@@ -301,6 +306,7 @@ const App = () => {
             {messages.map((msg) => (
               <motion.div
                 key={msg.id}
+                id={`msg-${msg.id}`}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`message-wrapper ${msg.sender === 'sarah' ? 'wrapper-sarah' : 'wrapper-user'}`}
