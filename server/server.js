@@ -214,13 +214,18 @@ app.post('/api/chat', async (req, res) => {
 
 app.post('/api/tts', async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, persona } = req.body;
     
     if (!ELEVENLABS_API_KEY) {
        return res.status(400).json({ error: 'ElevenLabs API Key not configured' });
     }
 
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}?output_format=mp3_44100_128`, {
+    let currentVoiceId = ELEVENLABS_VOICE_ID;
+    if (persona === 'zarah') {
+      currentVoiceId = 'df79dfca9f81f6ff7e237989a883c00ec2fd3722427421a548bd2816c1b8e749'; // Razan - Arabic Cultural Voice
+    }
+
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${currentVoiceId}?output_format=mp3_44100_128`, {
       method: 'POST',
       headers: {
         'Accept': 'audio/mpeg',

@@ -43,7 +43,7 @@ const App = () => {
   // Speak the greeting once the user starts the session
   useEffect(() => {
     if (sessionStarted) {
-      speakText(initialGreeting);
+      speakText(initialGreeting, 'sarah');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionStarted, initialGreeting]);
@@ -125,13 +125,13 @@ const App = () => {
     scrollToNewMessage();
   }, [messages, isTyping]);
 
-  const speakText = async (text) => {
+  const speakText = async (text, persona = 'sarah') => {
     try {
       setIsSynthesizing(true);
       const response = await fetch(`${API_BASE_URL}/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ text, persona })
       });
 
       if (!response.ok) {
@@ -217,9 +217,8 @@ const App = () => {
         transport,
         transfer,
         booking,
-        itinerary_days
       }]);
-      await speakText(replyText);
+      await speakText(replyText, responsePersona);
 
     } catch (err) {
       console.error('Chat API Error', err);
