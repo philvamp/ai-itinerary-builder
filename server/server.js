@@ -136,14 +136,15 @@ The booking object enables a live Booking.com availability search pre-filled wit
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { messages } = req.body;
+    const { messages, userLocalTime } = req.body;
     
     const today = new Date().toISOString().split('T')[0];
     const systemPromptWithContext = `${SARAH_SYSTEM_PROMPT}\n\nIMPORTANT CONTEXT:\n- TODAY'S DATE: ${today}. THIS IS YOUR ANCHOR POINT.
 - DATE VALIDATION: You MUST verify the user's requested dates. If they request dates in the past (before ${today}), you MUST politely inform them that the date has passed and ask for future dates. You CANNOT book past dates.
 - AMBIGUOUS DATES: If the user says a month without a year (e.g., "September"), default to the NEXT upcoming instance of that month relative to today.
 - NEVER suggest dates in the past (like 2024 or 2025).
-- Ensure the 'booking' JSON object uses the correct YYYY-MM-DD format for your chosen dates.`;
+- Ensure the 'booking' JSON object uses the correct YYYY-MM-DD format for your chosen dates.
+- USER'S LOCAL TIME CLOCK: It is currently ${userLocalTime || 'unknown time'} for the user. If you greet them dynamically based on the time of day, ensure you use this local time coordinate (e.g., do not say "Good evening" if it is actually morning for the user).`;
 
     // Inject Sarah's persona into the conversation
     const conversation = [

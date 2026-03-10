@@ -6,15 +6,26 @@ import './index.css';
 
 const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:3001/api' : '/api';
 
-const GREETINGS = [
-  "Hello. I'm Sarah, your exclusive travel concierge. Before we begin planning your itinerary, who do I have the pleasure of speaking with, and where are you hoping to go?",
-  "A very warm welcome. I'm Sarah. I would be delighted to plan the perfect escape for you. But first, what is your name, and where shall we be arranging your travel to?",
-  "Good evening. I'm Sarah. I am here to design an utterly flawless trip just for you. Please tell me, who am I speaking with, and where are we heading?"
-];
+const getDynamicGreetings = () => {
+  const hour = new Date().getHours();
+  let timeGreeting = "Hello";
+  if (hour < 12) timeGreeting = "Good morning";
+  else if (hour < 17) timeGreeting = "Good afternoon";
+  else timeGreeting = "Good evening";
+
+  return [
+    `${timeGreeting}. I'm Sarah, your exclusive travel concierge. Before we begin planning your itinerary, who do I have the pleasure of speaking with, and where are you hoping to go?`,
+    `A very warm welcome, and ${timeGreeting.toLowerCase()}. I'm Sarah. I would be delighted to plan the perfect escape for you. But first, what is your name, and where shall we be arranging your travel to?`,
+    `${timeGreeting}. I'm Sarah. I am here to design an utterly flawless trip just for you. Please tell me, who am I speaking with, and where are we heading?`
+  ];
+};
 
 const App = () => {
   const [sessionStarted, setSessionStarted] = useState(false);
-  const [initialGreeting] = useState(() => GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
+  const [initialGreeting] = useState(() => {
+    const greetings = getDynamicGreetings();
+    return greetings[Math.floor(Math.random() * greetings.length)];
+  });
   const [messages, setMessages] = useState([
     { id: 1, sender: 'sarah', text: initialGreeting }
   ]);
@@ -178,7 +189,10 @@ const App = () => {
       const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: apiMessages })
+        body: JSON.stringify({ 
+          messages: apiMessages,
+          userLocalTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        })
       });
 
       const data = await response.json();
