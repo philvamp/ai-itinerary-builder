@@ -14,9 +14,9 @@ const getDynamicGreetings = () => {
   else timeGreeting = "Good evening";
 
   return [
-    `${timeGreeting}. I'm Sarah, your exclusive travel concierge. Before we begin planning your itinerary, who do I have the pleasure of speaking with, and where are you hoping to go?`,
-    `A very warm welcome, and ${timeGreeting.toLowerCase()}. I'm Sarah. I would be delighted to plan the perfect escape for you. But first, what is your name, and where shall we be arranging your travel to?`,
-    `${timeGreeting}. I'm Sarah. I am here to design an utterly flawless trip just for you. Please tell me, who am I speaking with, and where are we heading?`
+    `${timeGreeting}. I'm Sarah, your exclusive travel concierge. To ensure absolute comfort, in which language would you prefer we converse today?`,
+    `A very warm welcome, and ${timeGreeting.toLowerCase()}. I'm Sarah. I would be delighted to plan the perfect escape for you. But first, which language would you prefer to speak in?`,
+    `${timeGreeting}. I'm Sarah. I am here to design an utterly flawless trip just for you. Please tell me, what language would you prefer to speak during our planning?`
   ];
 };
 
@@ -27,7 +27,7 @@ const App = () => {
     return greetings[Math.floor(Math.random() * greetings.length)];
   });
   const [messages, setMessages] = useState([
-    { id: 1, sender: 'sarah', text: initialGreeting }
+    { id: 1, sender: 'sarah', text: initialGreeting, persona: 'sarah' }
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -203,11 +203,13 @@ const App = () => {
       const transport = data.transport || null;
       const transfer = data.transfer || null;
       const itinerary_days = data.itinerary_days || null;
+      const responsePersona = data.persona || 'sarah';
       const showItinerary = !!(hotel || restaurant || transport || transfer);
 
       setMessages(prev => [...prev, { 
         id: Date.now() + 1, 
         sender: 'sarah', 
+        persona: responsePersona,
         text: replyText, 
         showItinerary, 
         hotel, 
@@ -327,10 +329,10 @@ const App = () => {
                 style={msg.showItinerary ? { maxWidth: '100%', width: '100%' } : {}}
               >
                 {msg.sender === 'sarah' && (
-                   <img src="/sarah-avatar.png" alt="Sarah, your AI travel concierge" className="sarah-avatar" />
+                   <img src={`/${msg.persona || 'sarah'}-avatar.png`} alt={`${msg.persona === 'zarah' ? 'Zarah' : 'Sarah'}, your AI travel concierge`} className="sarah-avatar" />
                 )}
                 <div className={`message-bubble ${msg.sender === 'sarah' ? 'message-sarah' : 'message-user'}`} style={msg.showItinerary ? { flexGrow: 1, maxWidth: 'calc(100% - 56px)' } : {}}>
-                  {msg.sender === 'sarah' && <div style={{ fontSize: '0.8rem', color: 'var(--accent-purple)', marginBottom: '8px', fontWeight: 'bold' }}>Sarah, Travel Concierge</div>}
+                  {msg.sender === 'sarah' && <div style={{ fontSize: '0.8rem', color: 'var(--accent-purple)', marginBottom: '8px', fontWeight: 'bold', textTransform: 'capitalize' }}>{msg.persona || 'sarah'}, Travel Concierge</div>}
                   {msg.text}
                 
                 {msg.showItinerary && (
@@ -388,8 +390,8 @@ const App = () => {
                     </div>
                     
                     <div style={{ marginBottom: '24px', paddingLeft: '8px' }}>
-                      <h3 style={{ fontSize: '1.8rem', fontWeight: '300', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ fontWeight: '800' }}>Sarah's</span> Curated Itinerary
+                      <h3 style={{ fontSize: '1.8rem', fontWeight: '300', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '12px', textTransform: 'capitalize' }}>
+                        <span style={{ fontWeight: '800' }}>{msg.persona || 'Sarah'}'s</span> Curated Itinerary
                       </h3>
                       <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginTop: '4px' }}>She has carefully selected the following sequence for your journey.</p>
                     </div>
