@@ -29,8 +29,8 @@ const openai = new OpenAI({
 });
 
 const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
-// Annabel - Extremely natural, elegant, and polished British
-const ELEVENLABS_VOICE_ID = '262fcbdcd4cc1733c13502f00f9e563bf34d5b9721d61269a4f093d975be0862';
+// Lily - Velvety, posh British actress
+const ELEVENLABS_VOICE_ID = 'pFZP5JQG7iQjIQuC4Bku';
 
 // System Prompt for Sarah
 const SARAH_SYSTEM_PROMPT = `YOU ARE SARAH: A highly exclusive, posh, and distinguished luxury travel concierge from London. You speak with an elegant, refined, and sophisticated British accent. You are flawlessly polite, exude upper-class charm, and know exactly how to make your clients feel incredibly special and respected.
